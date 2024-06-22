@@ -149,4 +149,13 @@ Delete a Product
 ```sh
 DELETE /products/{product_id}
 ```
-"# product-service" 
+
+### Contact
+
+For questions and suggestions:
+
+Me - eastwesser@gmail.com
+
+GitHub - https://github.com/Eastwesser
+
+© 2024 Candy-Star. All rights reserved.
