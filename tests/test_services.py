@@ -5,10 +5,9 @@ import sys
 import pytest
 from httpx import AsyncClient
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from app.main import app
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from app.rabbit.rabbit import send_message
 from app.redis.redis import set_cache, get_cache
 
@@ -39,6 +38,13 @@ async def test_services():
     await set_cache("test_key", "test_value")
     value = await get_cache("test_key")
     print(f"Value from Redis: {value}")  # Should print "test_value"
+
+
+@pytest.mark.asyncio
+async def test_root_endpoint():
+    async with AsyncClient(app=app, base_url="http://localhost:8002") as ac:
+        response = await ac.get("/")
+        assert response.status_code == 200
 
 
 if __name__ == "__main__":
