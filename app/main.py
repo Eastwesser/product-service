@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 import sentry_sdk
 import uvicorn
@@ -16,8 +17,9 @@ from app.models.models import Base, Product as ProductModel
 from app.models.pydantic_models import Product, ProductCreate
 from app.rabbit.rabbit import send_message
 from app.redis.redis import set_cache
-from crud.crud import get_product, get_all_products, create_product
+from app.crud.crud import get_product, get_all_products, create_product
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'crud')))
 load_dotenv()
 
 SENTRY_DSN = os.getenv("SENTRY_DSN")
