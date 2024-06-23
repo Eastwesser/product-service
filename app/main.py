@@ -13,11 +13,11 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from app.crud.crud import get_product, get_all_products, create_product
 from app.models.models import Base, Product as ProductModel
 from app.models.pydantic_models import Product, ProductCreate
 from app.rabbit.rabbit import send_message
 from app.redis.redis import set_cache
-from app.crud.crud import get_product, get_all_products, create_product
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'crud')))
 load_dotenv()
@@ -87,14 +87,10 @@ async def create_product_endpoint(product: ProductCreate, db: AsyncSession = Dep
         db_product = ProductModel(**product.dict())
         created_product = await create_product(db, db_product)
 
-        # Commit the transaction to persist changes
         await db.commit()
-
-        # Fetch the product within the same session context
         async with db.begin():
             db.refresh(created_product)
 
-        # Example: Sending a message and caching the product
         await send_message(f"Product {created_product.name} created")
         await set_cache(f"product_{created_product.id}", created_product)
 

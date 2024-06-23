@@ -31,6 +31,7 @@ orjson==3.10.5
 packaging==24.1
 pamqp==3.3.0
 pluggy==1.5.0
+-e git+https://github.com/Eastwesser/product-service.git@2b3e4593b63dfc4d4471bdcae97706b1da51c920#egg=product_service
 psycopg2-binary==2.9.9
 pydantic==2.7.4
 pydantic_core==2.18.4
@@ -44,7 +45,7 @@ rich==13.7.1
 sentry-sdk==2.6.0
 shellingham==1.5.4
 sniffio==1.3.1
-SQLAlchemy==2.0.30
+SQLAlchemy==2.0.31
 starlette==0.37.2
 tomli==2.0.1
 typer==0.12.3

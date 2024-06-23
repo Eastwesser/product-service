@@ -1,31 +1,25 @@
 import json
 
-import aioredis
+from app.redis.connection import get_redis_pool  # adjust import path as per your Redis setup
 
-from app.models.pydantic_models import Product
-
-
-async def get_redis():
-    redis = await aioredis.from_url("redis://localhost")
-    return redis
+from app.models.models import Product  # make sure this imports the correct Product model
 
 
 async def set_cache(key: str, value: Product):
-    redis = await get_redis()
+    redis = await get_redis_pool()
+    if isinstance(value, dict):
+        value = Product(**value)
     await redis.set(key, json.dumps({
         "id": value.id,
         "name": value.name,
         "description": value.description,
         "price": value.price
     }))
-    await redis.close()
 
 
-async def get_cache(key: str) -> Product:
-    redis = await get_redis()
-    value = await redis.get(key)
-    await redis.close()
-    if value:
-        data = json.loads(value)
-        return Product(**data)
+async def get_cache(key: str):
+    redis = await get_redis_pool()
+    cached_value = await redis.get(key)
+    if cached_value:
+        return json.loads(cached_value)
     return None
